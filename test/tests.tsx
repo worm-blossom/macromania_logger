@@ -18,14 +18,14 @@ function newLoggingBackend(): [LoggingTarget, () => string] {
   ];
 }
 
-Deno.test("log function works", () => {
+Deno.test("log function works", async () => {
   const loggerA = createLogger("LoggerOptionsA");
   const loggerB = createLogger("LoggerOptionsB");
   const loggerC = createLogger("LoggerOptionsC");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <LoggerConfig defaultLevel="info" />,
@@ -70,14 +70,14 @@ Deno.test("log function works", () => {
   );
 });
 
-Deno.test("logLevel functions work", () => {
+Deno.test("logLevel functions work", async () => {
   const loggerA = createLogger("LoggerOptionsA");
   const loggerB = createLogger("LoggerOptionsB");
   const loggerC = createLogger("LoggerOptionsC");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <LoggerConfig defaultLevel="info" />,
@@ -122,14 +122,14 @@ Deno.test("logLevel functions work", () => {
   );
 });
 
-Deno.test("Log macro works", () => {
+Deno.test("Log macro works", async () => {
   const loggerA = createLogger("LoggerOptionsA");
   const loggerB = createLogger("LoggerOptionsB");
   const loggerC = createLogger("LoggerOptionsC");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <LoggerConfig defaultLevel="info" />,
@@ -177,14 +177,14 @@ Deno.test("Log macro works", () => {
   );
 });
 
-Deno.test("LogLevel macros work", () => {
+Deno.test("LogLevel macros work", async () => {
   const loggerA = createLogger("LoggerOptionsA");
   const loggerB = createLogger("LoggerOptionsB");
   const loggerC = createLogger("LoggerOptionsC");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <LoggerConfig defaultLevel="info" />,
@@ -232,12 +232,12 @@ Deno.test("LogLevel macros work", () => {
   );
 });
 
-Deno.test("default level is warn", () => {
+Deno.test("default level is warn", async () => {
   const loggerA = createLogger("LoggerOptionsA");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[]}
     >
@@ -260,12 +260,12 @@ Deno.test("default level is warn", () => {
   );
 });
 
-Deno.test("reset logger level to default level", () => {
+Deno.test("reset logger level to default level", async () => {
   const loggerA = createLogger("LoggerOptionsA");
 
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <LoggerConfig defaultLevel="error" />,
@@ -305,21 +305,39 @@ Deno.test("reset logger level to default level", () => {
   );
 });
 
-Deno.test("readme example", () => {
+Deno.test("readme example", async () => {
   const [loggingBackend, getLoggedData] = newLoggingBackend();
   const ctx = new Context(loggingBackend);
-  const got = ctx.evaluate(
+  const got = await ctx.evaluate(
     <Config
       options={[
         <BakeCookiesLogger level="debug" />,
       ]}
     >
       <BakeSomeCookies />
-    </Config>
+    </Config>,
   );
   assertEquals(got, "");
   assertEquals(
     getLoggedData(),
-    `;${renderMessagePrefix("trace", 0)},Preheating oven.;${renderMessagePrefix("warn", 0)},Reaching critical temperature.;${renderMessagePrefix("error", 0)},The cookies are burnt.;${renderMessagePrefix("error", 1)},To prevent burning the cookies:;${renderMessagePrefix("error", 1)},How about setting an alarm, young novice?;${renderMessagePrefix("info", 0)},Do try again though.;${renderMessagePrefix("info", 0)},Cookies are great, after all.;${renderMessagePrefix("info", 1)},Everything in this closure is indented.;${renderMessagePrefix("info", 2)},You can nest groupings, by the way.;${renderMessagePrefix("info", 2)},Obviously.;${renderMessagePrefix("trace", 1)},Back to less indentation`,
+    `;${renderMessagePrefix("trace", 0)},Preheating oven.;${
+      renderMessagePrefix("warn", 0)
+    },Reaching critical temperature.;${
+      renderMessagePrefix("error", 0)
+    },The cookies are burnt.;${
+      renderMessagePrefix("error", 1)
+    },To prevent burning the cookies:;${
+      renderMessagePrefix("error", 1)
+    },How about setting an alarm, young novice?;${
+      renderMessagePrefix("info", 0)
+    },Do try again though.;${
+      renderMessagePrefix("info", 0)
+    },Cookies are great, after all.;${
+      renderMessagePrefix("info", 1)
+    },Everything in this closure is indented.;${
+      renderMessagePrefix("info", 2)
+    },You can nest groupings, by the way.;${
+      renderMessagePrefix("info", 2)
+    },Obviously.;${renderMessagePrefix("trace", 1)},Back to less indentation`,
   );
 });
