@@ -3,7 +3,7 @@ import { Config, Context } from "../deps.ts";
 import { renderMessagePrefix } from "../devDeps.ts";
 import { assertEquals } from "../devDeps.ts";
 import { LoggerConfig } from "../mod.tsx";
-import { createLogger } from "../mod.tsx";
+import { createLogger, didWarnOrWorse } from "../mod.tsx";
 import { BakeCookiesLogger, BakeSomeCookies } from "./cookies.tsx";
 
 function newLoggingBackend(): [LoggingTarget, () => string] {
@@ -340,4 +340,96 @@ Deno.test("readme example", async () => {
       renderMessagePrefix("info", 2)
     },Obviously.;${renderMessagePrefix("trace", 1)},Back to less indentation`,
   );
+});
+
+Deno.test("didWarnOrWorse", async () => {
+  await (async () => {
+    const loggerA = createLogger("LoggerOptionsA");
+
+    const [loggingBackend, getLoggedData] = newLoggingBackend();
+    const ctx = new Context(loggingBackend);
+    const got = await ctx.evaluate(
+      <Config
+        options={[
+          <BakeCookiesLogger level="debug" />,
+        ]}
+      >
+        <impure fun={(ctx) => <loggerA.Info></loggerA.Info>} />
+      </Config>,
+    );
+    assertEquals(got, "");
+    assertEquals(didWarnOrWorse(ctx), false);
+  })();
+
+  await (async () => {
+    const loggerA = createLogger("LoggerOptionsA");
+
+    const [loggingBackend, getLoggedData] = newLoggingBackend();
+    const ctx = new Context(loggingBackend);
+    const got = await ctx.evaluate(
+      <Config
+        options={[
+          <BakeCookiesLogger level="debug" />,
+        ]}
+      >
+        <impure fun={(ctx) => <loggerA.Warn></loggerA.Warn>} />
+      </Config>,
+    );
+    assertEquals(got, "");
+    assertEquals(didWarnOrWorse(ctx), true);
+  })();
+
+  await (async () => {
+    const loggerA = createLogger("LoggerOptionsA");
+
+    const [loggingBackend, getLoggedData] = newLoggingBackend();
+    const ctx = new Context(loggingBackend);
+    const got = await ctx.evaluate(
+      <Config
+        options={[
+          <BakeCookiesLogger level="debug" />,
+        ]}
+      >
+        <impure fun={(ctx) => <loggerA.Error></loggerA.Error>} />
+      </Config>,
+    );
+    assertEquals(got, "");
+    assertEquals(didWarnOrWorse(ctx), true);
+  })();
+
+  await (async () => {
+    const loggerA = createLogger("LoggerOptionsA");
+
+    const [loggingBackend, getLoggedData] = newLoggingBackend();
+    const ctx = new Context(loggingBackend);
+    const got = await ctx.evaluate(
+      <Config
+        options={[
+          <BakeCookiesLogger level="error" />,
+        ]}
+      >
+        <impure fun={(ctx) => <loggerA.Warn></loggerA.Warn>} />
+      </Config>,
+    );
+    assertEquals(got, "");
+    assertEquals(didWarnOrWorse(ctx), true);
+  })();
+
+  await (async () => {
+    const loggerA = createLogger("LoggerOptionsA");
+
+    const [loggingBackend, getLoggedData] = newLoggingBackend();
+    const ctx = new Context(loggingBackend);
+    const got = await ctx.evaluate(
+      <Config
+        options={[
+          <BakeCookiesLogger level="error" />,
+        ]}
+      >
+        <impure fun={(ctx) => <loggerA.Error></loggerA.Error>} />
+      </Config>,
+    );
+    assertEquals(got, "");
+    assertEquals(didWarnOrWorse(ctx), true);
+  })();
 });
