@@ -111,7 +111,7 @@ export function createLogger(setterName: string): Logger {
     );
   }
 
-  function LogGroup(props: { children: Expressions }): Expression {
+  function LogGroup(props: { children?: Expressions }): Expression {
     return (
       <lifecycle
         pre={logStartGroup}
@@ -142,15 +142,15 @@ export function createLogger(setterName: string): Logger {
     ConfigMacro,
     Log,
     LogGroup,
-    Debug: (props: { children: Expressions }) =>
+    Debug: (props: { children?: Expressions }) =>
       Log({ ...props, level: "debug" }),
-    Trace: (props: { children: Expressions }) =>
+    Trace: (props: { children?: Expressions }) =>
       Log({ ...props, level: "trace" }),
-    Info: (props: { children: Expressions }) =>
+    Info: (props: { children?: Expressions }) =>
       Log({ ...props, level: "info" }),
-    Warn: (props: { children: Expressions }) =>
+    Warn: (props: { children?: Expressions }) =>
       Log({ ...props, level: "warn" }),
-    Error: (props: { children: Expressions }) =>
+    Error: (props: { children?: Expressions }) =>
       Log({ ...props, level: "error" }),
     log,
     logStartGroup,
@@ -189,27 +189,27 @@ export type Logger = {
   /**
    * Group together all logger calls happening inside this macro.
    */
-  LogGroup: (props: { children: Expressions }) => Expression;
+  LogGroup: (props: { children?: Expressions }) => Expression;
   /**
    * Evaluate the children and log the result at level `"debug"`.
    */
-  Debug: (props: { children: Expressions }) => Expression;
+  Debug: (props: { children?: Expressions }) => Expression;
   /**
    * Evaluate the children and log the result at level `"trace"`.
    */
-  Trace: (props: { children: Expressions }) => Expression;
+  Trace: (props: { children?: Expressions }) => Expression;
   /**
    * Evaluate the children and log the result at level `"info"`.
    */
-  Info: (props: { children: Expressions }) => Expression;
+  Info: (props: { children?: Expressions }) => Expression;
   /**
    * Evaluate the children and log the result at level `"warn"`.
    */
-  Warn: (props: { children: Expressions }) => Expression;
+  Warn: (props: { children?: Expressions }) => Expression;
   /**
    * Evaluate the children and log the result at level `"error"`.
    */
-  Error: (props: { children: Expressions }) => Expression;
+  Error: (props: { children?: Expressions }) => Expression;
   /**
    * Log a message at a given {@linkcode LogLevel}.
    * @param - level - The {@linkcode LogLevel} at which to log.
@@ -271,7 +271,7 @@ type LogProps = {
    * The {@linkcode LogLevel} at which to log.
    */
   level: LogLevel;
-  children: Expressions;
+  children?: Expressions;
 };
 
 type LocalState = {
