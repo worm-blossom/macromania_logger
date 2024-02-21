@@ -3,11 +3,11 @@ import { createLogger } from "../mod.tsx";
 
 // The argument is the name of the config macro for this logger, as it will
 // appear in stack traces.
-const logger = createLogger("BakeCookiesLogger");
+const logger = createLogger("LoggerBakeCookies");
 
 // export the config macro.
-const BakeCookiesLogger = logger.ConfigMacro;
-export {BakeCookiesLogger};
+const LoggerBakeCookies = logger.ConfigMacro;
+export {LoggerBakeCookies};
 
 // A macro that uses the freshly created logger.
 export function BakeSomeCookies(): Expression {

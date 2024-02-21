@@ -8,9 +8,9 @@ different logging levels.
 ```tsx
 <Config
     options={[
-    <LoggerConfig defaultLevel="info" />, {/* "warn" if left unspecified */}
-    <BakeCookiesLogger level="trace" />,
-    <FeedCatLogger level="warn" />,
+    <ConfigLoggers defaultLevel="info" />, {/* "warn" if left unspecified */}
+    <LoggerBakeCookies level="trace" />,
+    <LoggerFeedCat level="warn" />,
     ]}
 >
     <CleanRoom /> {/* uses default logging level: logs info, warn, and error messages */}
@@ -26,11 +26,11 @@ Here is a demonstration of how macro authors obtain and use loggers.
 ```tsx
 // The argument is the name of the config macro for this logger, as it will
 // appear in stack traces.
-const logger = createLogger("BakeCookiesLogger");
+const logger = createLogger("LoggerBakeCookies");
 
 // export the config macro.
-const BakeCookiesLogger = logger.ConfigMacro;
-export {BakeCookiesLogger};
+const LoggerBakeCookies = logger.ConfigMacro;
+export {LoggerBakeCookies};
 
 // A macro that uses the freshly created logger.
 export function BakeSomeCookies(): Expression {

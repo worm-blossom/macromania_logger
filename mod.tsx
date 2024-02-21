@@ -1,5 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-import { CHAR_ZERO_WIDTH_NOBREAK_SPACE } from "https://deno.land/std@0.63.0/path/_constants.ts";
 import { renderMessagePrefix } from "./deps.ts";
 import { logGte } from "./deps.ts";
 import { logLt } from "./deps.ts";
@@ -30,9 +29,9 @@ export type GlobalLoggerConfigUpdate = {
 
 const [
   getGlobalConfig,
-  LoggerConfig,
+  ConfigLoggers,
 ] = createConfigOptions<GlobalLoggerConfig, GlobalLoggerConfigUpdate>(
-  "LoggerConfig",
+  "ConfigLoggers",
   {
     defaultLevel: "warn",
   },
@@ -42,7 +41,7 @@ const [
     return newValue;
   },
 );
-export { LoggerConfig };
+export { ConfigLoggers };
 
 type GlobalState = {
   /**
@@ -277,7 +276,3 @@ type LogProps = {
 type LocalState = {
   groupLevel: number;
 };
-
-const cookieLogger: {ConfigMacro: number} = {ConfigMacro: 42};
-const BakeCookiesLogger = cookieLogger.ConfigMacro;
-export {BakeCookiesLogger};

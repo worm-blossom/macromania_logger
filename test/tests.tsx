@@ -2,9 +2,9 @@ import { LoggingTarget } from "../deps.ts";
 import { Config, Context } from "../deps.ts";
 import { renderMessagePrefix } from "../devDeps.ts";
 import { assertEquals } from "../devDeps.ts";
-import { LoggerConfig } from "../mod.tsx";
+import { ConfigLoggers } from "../mod.tsx";
 import { createLogger, didWarnOrWorse } from "../mod.tsx";
-import { BakeCookiesLogger, BakeSomeCookies } from "./cookies.tsx";
+import { LoggerBakeCookies, BakeSomeCookies } from "./cookies.tsx";
 
 function newLoggingBackend(): [LoggingTarget, () => string] {
   let str = "";
@@ -28,7 +28,7 @@ Deno.test("log function works", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <LoggerConfig defaultLevel="info" />,
+        <ConfigLoggers defaultLevel="info" />,
         <loggerA.ConfigMacro level="trace" />,
         <loggerB.ConfigMacro level="warn" />,
       ]}
@@ -80,7 +80,7 @@ Deno.test("logLevel functions work", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <LoggerConfig defaultLevel="info" />,
+        <ConfigLoggers defaultLevel="info" />,
         <loggerA.ConfigMacro level="trace" />,
         <loggerB.ConfigMacro level="warn" />,
       ]}
@@ -132,7 +132,7 @@ Deno.test("Log macro works", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <LoggerConfig defaultLevel="info" />,
+        <ConfigLoggers defaultLevel="info" />,
         <loggerA.ConfigMacro level="trace" />,
         <loggerB.ConfigMacro level="warn" />,
       ]}
@@ -187,7 +187,7 @@ Deno.test("LogLevel macros work", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <LoggerConfig defaultLevel="info" />,
+        <ConfigLoggers defaultLevel="info" />,
         <loggerA.ConfigMacro level="trace" />,
         <loggerB.ConfigMacro level="warn" />,
       ]}
@@ -268,7 +268,7 @@ Deno.test("reset logger level to default level", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <LoggerConfig defaultLevel="error" />,
+        <ConfigLoggers defaultLevel="error" />,
         <loggerA.ConfigMacro level="warn" />,
       ]}
     >
@@ -311,7 +311,7 @@ Deno.test("readme example", async () => {
   const got = await ctx.evaluate(
     <Config
       options={[
-        <BakeCookiesLogger level="debug" />,
+        <LoggerBakeCookies level="debug" />,
       ]}
     >
       <BakeSomeCookies />
@@ -351,7 +351,7 @@ Deno.test("didWarnOrWorse", async () => {
     const got = await ctx.evaluate(
       <Config
         options={[
-          <BakeCookiesLogger level="debug" />,
+          <LoggerBakeCookies level="debug" />,
         ]}
       >
         <impure fun={(ctx) => <loggerA.Info></loggerA.Info>} />
@@ -369,7 +369,7 @@ Deno.test("didWarnOrWorse", async () => {
     const got = await ctx.evaluate(
       <Config
         options={[
-          <BakeCookiesLogger level="debug" />,
+          <LoggerBakeCookies level="debug" />,
         ]}
       >
         <impure fun={(ctx) => <loggerA.Warn></loggerA.Warn>} />
@@ -387,7 +387,7 @@ Deno.test("didWarnOrWorse", async () => {
     const got = await ctx.evaluate(
       <Config
         options={[
-          <BakeCookiesLogger level="debug" />,
+          <LoggerBakeCookies level="debug" />,
         ]}
       >
         <impure fun={(ctx) => <loggerA.Error></loggerA.Error>} />
@@ -405,7 +405,7 @@ Deno.test("didWarnOrWorse", async () => {
     const got = await ctx.evaluate(
       <Config
         options={[
-          <BakeCookiesLogger level="error" />,
+          <LoggerBakeCookies level="error" />,
         ]}
       >
         <impure fun={(ctx) => <loggerA.Warn></loggerA.Warn>} />
@@ -423,7 +423,7 @@ Deno.test("didWarnOrWorse", async () => {
     const got = await ctx.evaluate(
       <Config
         options={[
-          <BakeCookiesLogger level="error" />,
+          <LoggerBakeCookies level="error" />,
         ]}
       >
         <impure fun={(ctx) => <loggerA.Error></loggerA.Error>} />
