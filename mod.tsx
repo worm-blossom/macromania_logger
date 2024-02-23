@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { renderMessagePrefix } from "./deps.ts";
+import { renderMessagePrefix, styleDebuggingInformation } from "./deps.ts";
 import { logGte } from "./deps.ts";
 import { logLt } from "./deps.ts";
 import {
@@ -137,6 +137,22 @@ export function createLogger(setterName: string): Logger {
     }
   }
 
+  function at(ctx: Context) {
+    const localState = getLocalState(ctx);
+    ctx.log(
+      "       ",
+      "    ".repeat(localState.groupLevel + 1),
+      `at ${styleDebuggingInformation(ctx.getCurrentDebuggingInformation())}`,
+    );
+  }
+
+  function At(): Expression {
+    return <impure fun={(ctx) => {
+      at(ctx);
+      return "";
+    }} />
+  }
+
   return {
     ConfigMacro,
     Log,
@@ -164,6 +180,8 @@ export function createLogger(setterName: string): Logger {
     info: (ctx: Context, ...msg: any[]) => log(ctx, "info", ...msg),
     warn: (ctx: Context, ...msg: any[]) => log(ctx, "warn", ...msg),
     error: (ctx: Context, ...msg: any[]) => log(ctx, "error", ...msg),
+    at,
+    At,
   };
 }
 
@@ -210,6 +228,10 @@ export type Logger = {
    */
   Error: (props: { children?: Expressions }) => Expression;
   /**
+   * Log the current top of the macro stack trace.
+   */
+  At: () => Expression;
+  /**
    * Log a message at a given {@linkcode LogLevel}.
    * @param - level - The {@linkcode LogLevel} at which to log.
    * @param - msg - The message to log.
@@ -249,6 +271,10 @@ export type Logger = {
    * Log a message at level `"error"`.
    */
   error: (ctx: Context, ...msg: any[]) => void;
+  /**
+   * Log the current top of the macro stack trace.
+   */
+  at: (ctx: Context) => void;
 };
 
 /**
