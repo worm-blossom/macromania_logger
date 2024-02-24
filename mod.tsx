@@ -32,9 +32,9 @@ const [
   ConfigLoggers,
 ] = createConfigOptions<GlobalLoggerConfig, GlobalLoggerConfigUpdate>(
   "ConfigLoggers",
-  {
+  () => ({
     defaultLevel: "warn",
-  },
+  }),
   (oldValue, update) => {
     const newValue = { ...oldValue };
     newValue.defaultLevel = update.defaultLevel;
@@ -50,9 +50,9 @@ type GlobalState = {
   didWarnOrWorse: boolean;
 };
 
-const [getGlobalState, setGlobalState] = createSubstate<GlobalState>({
+const [getGlobalState, setGlobalState] = createSubstate<GlobalState>(() => ({
   didWarnOrWorse: false,
-});
+}));
 
 /**
  * Return `true` if at least one warning or error was logged by any logger.
@@ -65,14 +65,14 @@ export function didWarnOrWorse(ctx: Context): boolean {
  * Create a new logger. It can be configured independently from all other loggers.
  */
 export function createLogger(setterName: string): Logger {
-  const [getLocalState, setLocalState] = createSubstate<LocalState>({
+  const [getLocalState, _setLocalState] = createSubstate<LocalState>(() => ({
     groupLevel: 0,
-  });
+  }));
 
   const [getLocalConfig, ConfigMacro] = createConfigOptions<
     LoggerOptions,
     LoggerOptions
-  >(setterName, {}, (_oldValue, update) => {
+  >(setterName, () => ({}), (_oldValue, update) => {
     const newValue = { ...update };
     return newValue;
   });
